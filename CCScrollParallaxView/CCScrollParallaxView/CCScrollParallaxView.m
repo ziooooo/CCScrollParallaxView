@@ -91,8 +91,8 @@
 {
     self.scrollForward = offset > 0;
     
-    if (item.delay > 0 && scrollX > (item.showToIndex - 1) * self.scrollView.frame.size.width && scrollX < (item.showToIndex + 1) * self.scrollView.frame.size.width) return;
-    if (item.allowFade) {
+    if (item.delay > 0 && scrollX > (item.showToIndex - 1) * self.scrollView.frame.size.width && scrollX < (item.showToIndex + 1) * self.scrollView.frame.size.width && item.gapMultiple != 1) return;
+    if (item.allowFade && item.gapMultiple != 1 && item.delay == 0) { //滑动时改变透明度
         
         if (CGRectIntersectsRect(self.bounds, item.frame)) {
             if (CGRectEqualToRect(item.whenShowFrame, CGRectZero)) {
@@ -139,6 +139,7 @@
     for (CCScrollParallaxItem *item in self.itemArray) {
         if (!item.delay) continue;
         if (item.showToIndex == curIndex) {//取出item
+            item.alpha = !item.allowFade;
             [UIView animateWithDuration:item.delay animations:^{
                 item.frame = item.itemShowFrame;
                 item.alpha = 1;
@@ -162,6 +163,10 @@
                     item.alpha = 0;
                 }
             } completion:^(BOOL finished) {
+                item.alpha = 0;
+                if (item.gapMultiple == 1) {
+                    return ;
+                }
                 CGFloat offset;
                 if (self.scrollForward) {
                     offset = scrollView.frame.size.width;
@@ -170,7 +175,7 @@
                     offset = -scrollView.frame.size.width;
                 }
                 [self setScrollScrollParallaxItem:item withOffset:offset];
-                item.alpha = 0;
+                
             }];
         }
     }

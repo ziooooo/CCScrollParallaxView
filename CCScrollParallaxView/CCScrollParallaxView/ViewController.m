@@ -32,7 +32,7 @@
     CCScrollParallaxView *scrollParallaxView = [[CCScrollParallaxView alloc] init];
     scrollParallaxView.delegate = self;
     //图片数组图片数量决定滚动页数
-    scrollParallaxView.imageArr = @[image1 ,image2 ,image3 ,image4,image5];
+    scrollParallaxView.imageArr = @[image1 ,image2 ,image3 ,image4 ,image5];
     [scrollParallaxView addToView:self.view];
     
     
@@ -80,16 +80,16 @@
     CCScrollParallaxItem *item00 = [[CCScrollParallaxItem alloc] initWithImageName:@"arrow" index:0 showFrame:CGRectMake(arrowX, arrowY, arrowW, arrowH) multiple:0];
     [scrollParallaxView addScrollItem:item00];
     //圈
-    CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF1 multiple:0];
+    CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF1 multiple:1];
     
     [scrollParallaxView addScrollItem:item01];
-    CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF2 multiple:0];
+    CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF2 multiple:1];
     
     [scrollParallaxView addScrollItem:item02];
-    CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF3 multiple:0];
+    CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF3 multiple:1];
     
     [scrollParallaxView addScrollItem:item03];
-    CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF4 multiple:0];
+    CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF4 multiple:1];
     
     [scrollParallaxView addScrollItem:item04];
     
@@ -178,38 +178,38 @@
     CGFloat hulu7X = hulu6X + 60;
     CGRect hulu7Rect = CGRectMake(hulu7X, hulu7Y, huluW, huluH);
     
-    CCScrollParallaxItem *hulu1 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu1" index:4 showFrame:hulu1Rect multiple:3 angle:90];
+    CCScrollParallaxItem *hulu1 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu1" index:4 showFrame:hulu1Rect multiple:1.5 angle:90];
     hulu1.allowFade = YES;
     hulu1.delay = 0.3;
     [scrollParallaxView addScrollItem:hulu1];
-    CCScrollParallaxItem *hulu2 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu2" index:4 showFrame:hulu2Rect multiple:3 angle:50];
+    CCScrollParallaxItem *hulu2 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu2" index:4 showFrame:hulu2Rect multiple:1.5 angle:50];
     hulu2.allowFade = YES;
     hulu2.delay = 0.4;
     [scrollParallaxView addScrollItem:hulu2];
-    CCScrollParallaxItem *hulu3 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu3" index:4 showFrame:hulu3Rect multiple:3 angle:120];
+    CCScrollParallaxItem *hulu3 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu3" index:4 showFrame:hulu3Rect multiple:1.5 angle:120];
     hulu3.allowFade = YES;
     hulu3.delay = 0.55;
     [scrollParallaxView addScrollItem:hulu3];
-    CCScrollParallaxItem *hulu4 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu4" index:4 showFrame:hulu4Rect multiple:5 angle:200];
+    CCScrollParallaxItem *hulu4 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu4" index:4 showFrame:hulu4Rect multiple:1.5 angle:200];
     hulu4.allowFade = YES;
     hulu4.delay = 0.7;
     [scrollParallaxView addScrollItem:hulu4];
-    CCScrollParallaxItem *hulu5 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu5" index:4 showFrame:hulu5Rect multiple:3 angle:-120];
+    CCScrollParallaxItem *hulu5 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu5" index:4 showFrame:hulu5Rect multiple:1.5 angle:-120];
     hulu5.allowFade = YES;
     hulu5.delay = 0.8;
     [scrollParallaxView addScrollItem:hulu5];
-    CCScrollParallaxItem *hulu6 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu6" index:4 showFrame:hulu6Rect multiple:3 angle:-60];
+    CCScrollParallaxItem *hulu6 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu6" index:4 showFrame:hulu6Rect multiple:1.5 angle:-60];
     hulu6.allowFade = YES;
     hulu6.delay = 0.95;
     [scrollParallaxView addScrollItem:hulu6];
-    CCScrollParallaxItem *hulu7 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu7" index:4 showFrame:hulu7Rect multiple:3 angle:-10];
+    CCScrollParallaxItem *hulu7 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu7" index:4 showFrame:hulu7Rect multiple:1.5 angle:-10];
     hulu7.allowFade = YES;
     hulu7.delay = 1.0;
     [scrollParallaxView addScrollItem:hulu7];
     
     
     //完成
-    CCScrollParallaxItem *item35 = [[CCScrollParallaxItem alloc] initWithImageName:@"done" index:4 showFrame:CGRectMake(arrowX, arrowY, 60, 60) multiple:0];
+    CCScrollParallaxItem *item35 = [[CCScrollParallaxItem alloc] initWithImageName:@"done" index:4 showFrame:CGRectMake(arrowX, arrowY, 60, 60) multiple:1];
     item35.delegate = self;
     [scrollParallaxView addScrollItem:item35];
     
