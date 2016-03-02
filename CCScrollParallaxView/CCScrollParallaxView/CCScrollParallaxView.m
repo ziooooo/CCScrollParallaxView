@@ -8,7 +8,7 @@
 
 #import "CCScrollParallaxView.h"
 #define angle2Radian(angle)  ((angle)/180.0*M_PI)
-
+#define Screen_Width [UIScreen mainScreen].bounds.size.width
 #define kTempSpan 10
 
 @interface CCScrollParallaxView()<UIScrollViewDelegate>
@@ -20,6 +20,10 @@
 @property (assign ,nonatomic)CGFloat tempX;
 
 @property (strong ,nonatomic ,readwrite)NSMutableArray *itemArray;
+/**
+ *  当前是否正向滚动
+ */
+@property (assign ,nonatomic)BOOL scrollForward;
 
 @end
 
@@ -79,20 +83,95 @@
     self.tempX = scrollX;
     
     for (CCScrollParallaxItem *item in self.itemArray) {
-        CGRect temp = item.frame;
-        //计算每次item移动后的 frame
-        temp.origin.x -= (offset * item.gapMultiple * item.xMoveRatio);
-        temp.origin.y += (offset * item.gapMultiple * item.yMoveRatio);
-        item.frame = temp;
+        [self scrollWithScrollParallaxItem:item offset:offset scrollX:scrollX];
+    }
+}
+
+-(void)scrollWithScrollParallaxItem:(CCScrollParallaxItem *)item offset:(CGFloat)offset scrollX:(CGFloat)scrollX
+{
+    self.scrollForward = offset > 0;
+    
+    if (item.delay > 0 && scrollX > (item.showToIndex - 1) * self.scrollView.frame.size.width && scrollX < (item.showToIndex + 1) * self.scrollView.frame.size.width) return;
+    if (item.allowFade) {
+        
+        if (CGRectIntersectsRect(self.bounds, item.frame)) {
+            if (CGRectEqualToRect(item.whenShowFrame, CGRectZero)) {
+                item.whenShowFrame = item.frame;
+            }
+            
+            CGPoint currentPoint = item.frame.origin;
+            CGPoint showPoint = item.itemShowFrame.origin;
+            CGPoint whenShowPoint = item.whenShowFrame.origin;
+            
+            CGFloat alphaD = [self sideWithFirstPoint:whenShowPoint secondPoint:showPoint];
+            CGFloat alphaN = alphaD - [self sideWithFirstPoint:showPoint secondPoint:currentPoint];
+            item.alpha = alphaN / alphaD;
+        }
+        
     }
     
+    [self setScrollScrollParallaxItem:item withOffset:offset];
+    
 }
+//设置scroll item 位置
+-(void)setScrollScrollParallaxItem:(CCScrollParallaxItem *)item withOffset:(CGFloat)offset
+{
+    CGRect temp = item.frame;
+    //计算每次item移动后的 frame
+    temp.origin.x -= (offset * item.gapMultiple * item.xMoveRatio);
+    temp.origin.y += (offset * item.gapMultiple * item.yMoveRatio);
+    item.frame = temp;
+}
+
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 {
     if (scrollView.contentOffset.x + scrollView.frame.size.width >= scrollView.contentSize.width) {
         //滚动到最后
         if ([self.delegate respondsToSelector:@selector(CCScrollParallaxViewWillScrollEnd:)]) {
             [self.delegate CCScrollParallaxViewWillScrollEnd:self];
+        }
+    }
+}
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    //判断当前图片位置
+    int curIndex = (int)(scrollView.contentOffset.x / scrollView.frame.size.width);
+    for (CCScrollParallaxItem *item in self.itemArray) {
+        if (!item.delay) continue;
+        if (item.showToIndex == curIndex) {//取出item
+            [UIView animateWithDuration:item.delay animations:^{
+                item.frame = item.itemShowFrame;
+                item.alpha = 1;
+            } completion:^(BOOL finished) {
+                
+            }];
+        }
+    }
+}
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    
+    //判断当前图片位置
+    int curIndex = (int)(scrollView.contentOffset.x / scrollView.frame.size.width);
+    for (CCScrollParallaxItem *item in self.itemArray) {
+        if (!item.delay) continue;
+        if (item.showToIndex == curIndex) {//取出item
+            item.alpha = 1;
+            [UIView animateWithDuration:0.2 animations:^{
+                if (item.allowFade) {
+                    item.alpha = 0;
+                }
+            } completion:^(BOOL finished) {
+                CGFloat offset;
+                if (self.scrollForward) {
+                    offset = scrollView.frame.size.width;
+                }
+                else{
+                    offset = -scrollView.frame.size.width;
+                }
+                [self setScrollScrollParallaxItem:item withOffset:offset];
+                item.alpha = 0;
+            }];
         }
     }
 }
@@ -103,6 +182,7 @@
     if (item.showToIndex + 1 > self.imageArr.count) {
         return;
     }
+    item.alpha = !item.allowFade;
     //item偏移距离
     CGFloat itemSkewSpan = [self itemSkewWithItem:item];
     //item计算角度后偏移位置
@@ -167,6 +247,12 @@
 -(CGFloat)sideWithCurrentAngle:(CGFloat)angel otherSide:(CGFloat)otherSide otherAngle:(CGFloat)otherAngle
 {
     return (otherSide * sin(angle2Radian(angel)))  / sin(angle2Radian(otherAngle));
+}
+
+//计算两点间的距离
+-(CGFloat)sideWithFirstPoint:(CGPoint)fPoint secondPoint:(CGPoint)sPoint
+{
+    return  sqrt(pow(fPoint.x - sPoint.x, 2) + pow(fPoint.y - sPoint.y, 2));
 }
 
 @end

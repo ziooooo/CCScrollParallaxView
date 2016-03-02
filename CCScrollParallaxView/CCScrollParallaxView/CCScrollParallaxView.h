@@ -4,7 +4,7 @@
 //
 //  Created by ziooooo on 15/9/1.
 //  Copyright (c) 2015年 ziooooo. All rights reserved.
-//  问题请联系QQ:54540908
+//
 //
 
 #import <UIKit/UIKit.h>
@@ -109,10 +109,19 @@
  *  角度 水平方向(1,0)方向为起点 逆时针旋转
  */
 @property (assign ,nonatomic)CGFloat angle;
+/**
+ *  延迟时间 0为不延迟
+ */
+@property (assign ,nonatomic)CGFloat delay;
+/**
+ *  淡出淡入
+ */
+@property (assign ,nonatomic)BOOL allowFade;
 
 
 //xMoveRatio yMoveRatio 传递参数 无需设置
 @property (assign ,nonatomic)CGFloat xMoveRatio;
 @property (assign ,nonatomic)CGFloat yMoveRatio;
+@property (assign ,nonatomic)CGRect whenShowFrame;
 
 @end
