@@ -8,8 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger ,ExampleType) {
+    ExampleTypeNormal = 0,
+    ExampleTypeScroll ,
+    ExampleTypeFade ,
+    ExampleTypeDelay ,
+    ExampleTypeComposite ,
+    
+};
+
 @interface ViewController : UIViewController
 
+@property (assign ,nonatomic)ExampleType type;
 
 @end
 

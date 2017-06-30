@@ -7,21 +7,33 @@
 //
 
 #import "CCScrollParallaxView.h"
+
+typedef void(^CCScrollParallaxItemActionBlock)();
+
+@interface CCScrollParallaxItem ()
+
+@property (assign ,nonatomic)CGFloat xMoveRatio;
+@property (assign ,nonatomic)CGFloat yMoveRatio;
+@property (assign ,nonatomic)CGRect whenShowFrame;
+
+@property (copy ,nonatomic)CCScrollParallaxItemActionBlock block;
+
+@end
+
 #define angle2Radian(angle)  ((angle)/180.0*M_PI)
-#define Screen_Width [UIScreen mainScreen].bounds.size.width
 #define kTempSpan 10
 
-@interface CCScrollParallaxView()<UIScrollViewDelegate>
+@interface CCScrollParallaxView()<UIScrollViewDelegate>{
+    //保存每次滚动后contentOffset.x 辅助计算滚动间距
+    CGFloat _tempX;
+}
 
 @property (weak ,nonatomic,readwrite)UIScrollView *scrollView;
-/**
- *  保存每次滚动后contentOffset.x 辅助计算滚动间距
- */
-@property (assign ,nonatomic)CGFloat tempX;
 
-@property (strong ,nonatomic ,readwrite)NSMutableArray *itemArray;
+@property (strong ,nonatomic)NSMutableArray *itemArray;
+
 /**
- *  当前是否正向滚动
+ 是否正向滚动
  */
 @property (assign ,nonatomic)BOOL scrollForward;
 
@@ -36,9 +48,16 @@
     return _itemArray;
 }
 
+-(NSArray *)scrollParallaxItemArray
+{
+    return self.itemArray;
+}
+
 -(instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
+        self.clipsToBounds = YES;
+        
         UIScrollView *scrollView = [[UIScrollView alloc] init];
         scrollView.showsHorizontalScrollIndicator=NO;
         scrollView.showsVerticalScrollIndicator=NO;
@@ -50,22 +69,45 @@
     return self;
 }
 
--(void)addToView:(UIView *)view
+-(void)showToView:(UIView *)view
 {
     //设置frame
     CGSize imageSize = [self setFrameToView:view];
     //设置图片
-    for (int i = 0;i < self.imageArr.count ; i++) {
+    for (int i = 0;i < self.pageBackgroundImageArray.count ; i++) {
         UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(i * imageSize.width, 0, imageSize.width, imageSize.height)];
-        imageView.image = self.imageArr[i];
+        imageView.image = self.pageBackgroundImageArray[i];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.clipsToBounds = YES;
         [self.scrollView addSubview:imageView];
     }
     //设置scrollview
-    self.scrollView.contentSize=CGSizeMake(imageSize.width * self.imageArr.count, imageSize.height);
+    self.scrollView.contentSize=CGSizeMake(imageSize.width * self.pageBackgroundImageArray.count, imageSize.height);
     
     [view addSubview:self];
+    
+    
+    [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:nil];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+    if ([object isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollView = object;
+        if (scrollView.contentOffset.x + scrollView.frame.size.width > scrollView.contentSize.width) {
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                if ([self.delegate respondsToSelector:@selector(cc_scrollParallaxViewLastPageStillDragging:)]) {
+                    [self.delegate cc_scrollParallaxViewLastPageStillDragging:self];
+                    [scrollView setContentOffset:CGPointMake( scrollView.contentSize.width - scrollView.frame.size.width, 0) animated:NO];
+                }
+            });
+        }
+    }
+}
+
+-(void)dealloc{
+    [self.scrollView removeObserver:self forKeyPath:@"contentOffset"];
 }
 
 -(CGSize)setFrameToView:(UIView *)view
@@ -78,9 +120,9 @@
 {
     CGFloat scrollX = scrollView.contentOffset.x;
     //每次滚动间距
-    CGFloat offset = scrollX - self.tempX;
+    CGFloat offset = scrollX - _tempX;
     
-    self.tempX = scrollX;
+    _tempX = scrollX;
     
     for (CCScrollParallaxItem *item in self.itemArray) {
         [self scrollWithScrollParallaxItem:item offset:offset scrollX:scrollX];
@@ -91,8 +133,14 @@
 {
     self.scrollForward = offset > 0;
     
-    if (item.delay > 0 && scrollX > (item.showToIndex - 1) * self.scrollView.frame.size.width && scrollX < (item.showToIndex + 1) * self.scrollView.frame.size.width && item.gapMultiple != 1) return;
-    if (item.allowFade && item.gapMultiple != 1 && item.delay == 0) { //滑动时改变透明度
+    if (item.duration > 0
+        && item.gapMultiple != 1
+        && scrollX > (item.showToIndex - 1) * self.scrollView.frame.size.width
+        && scrollX < (item.showToIndex + 1) * self.scrollView.frame.size.width
+        ) return; //
+    
+    if (item.allowFade
+        && item.duration == 0) { //滑动时改变透明度
         
         if (CGRectIntersectsRect(self.bounds, item.frame)) {
             if (CGRectEqualToRect(item.whenShowFrame, CGRectZero)) {
@@ -123,24 +171,15 @@
     item.frame = temp;
 }
 
--(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
-{
-    if (scrollView.contentOffset.x + scrollView.frame.size.width >= scrollView.contentSize.width) {
-        //滚动到最后
-        if ([self.delegate respondsToSelector:@selector(CCScrollParallaxViewWillScrollEnd:)]) {
-            [self.delegate CCScrollParallaxViewWillScrollEnd:self];
-        }
-    }
-}
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     //判断当前图片位置
     int curIndex = (int)(scrollView.contentOffset.x / scrollView.frame.size.width);
     for (CCScrollParallaxItem *item in self.itemArray) {
-        if (!item.delay) continue;
+        if (!item.duration) continue;
         if (item.showToIndex == curIndex) {//取出item
             item.alpha = !item.allowFade;
-            [UIView animateWithDuration:item.delay animations:^{
+            [UIView animateWithDuration:item.duration delay:item.delay options:UIViewAnimationOptionCurveLinear animations:^{
                 item.frame = item.itemShowFrame;
                 item.alpha = 1;
             } completion:^(BOOL finished) {
@@ -148,14 +187,17 @@
             }];
         }
     }
+    
+    if ([self.delegate respondsToSelector:@selector(cc_scrollParallaxView:didShowPageWithIndex:)]) {
+        [self.delegate cc_scrollParallaxView:self didShowPageWithIndex:curIndex];
+    }
 }
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    
     //判断当前图片位置
     int curIndex = (int)(scrollView.contentOffset.x / scrollView.frame.size.width);
     for (CCScrollParallaxItem *item in self.itemArray) {
-        if (!item.delay) continue;
+        if (!item.duration) continue;
         if (item.showToIndex == curIndex) {//取出item
             item.alpha = 1;
             [UIView animateWithDuration:0.2 animations:^{
@@ -181,10 +223,15 @@
     }
 }
 
--(void)addScrollItem:(CCScrollParallaxItem *)item
+-(void)addScrollItem:(CCScrollParallaxItem *)item toIndex:(NSInteger)index
 {
+    
+    if (index > 0) {
+        item.showToIndex = index;
+    }
+    
     //防止越界
-    if (item.showToIndex + 1 > self.imageArr.count) {
+    if (item.showToIndex + 1 > self.pageBackgroundImageArray.count) {
         return;
     }
     item.alpha = !item.allowFade;
@@ -217,16 +264,20 @@
     
     [self addSubview:item];
     [self.itemArray addObject:item];
-    
-    
 }
+
+-(void)addScrollItem:(CCScrollParallaxItem *)item
+{
+    [self addScrollItem:item toIndex:0];
+}
+
 //item偏移距离
 -(CGFloat)itemSkewWithItem:(CCScrollParallaxItem *)item
 {
     return (item.showToIndex * self.scrollView.frame.size.width) * item.gapMultiple;
 }
 
-#pragma mark - 根据角度算新的点
+#pragma mark 根据角度算新的点
 //以旧点 水平方向(1,0)方向为起点 逆时针旋转
 -(CGPoint)newPointWithAngle:(CGFloat)angle oldPoint:(CGPoint)point skewX:(CGFloat)skewSpan;
 {
@@ -266,50 +317,52 @@
 #pragma mark - item
 
 @implementation CCScrollParallaxItem
-- (instancetype)initWithImageName:(NSString *)imageName index:(NSInteger)index showFrame:(CGRect)frame multiple:(CGFloat)multiple
-{
-    return [self initWithImageName:imageName index:index showFrame:frame multiple:multiple angle:0];
-}
 
--(instancetype)initWithImageName:(NSString *)imageName index:(NSInteger)index showFrame:(CGRect)frame multiple:(CGFloat)multiple angle:(CGFloat)angle
+
+-(instancetype)initWithImage:(UIImage *)image showFrame:(CGRect)frame multiple:(CGFloat)multiple angle:(CGFloat)angle allowFade:(BOOL)allowFade duration:(CGFloat)duration delay:(CGFloat)delay
 {
     if (self = [super init]) {
-        [self setBackgroundImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
+        if (image)[self setBackgroundImage:image forState:UIControlStateNormal];
         self.userInteractionEnabled = NO;
-        self.showToIndex = index;
         self.itemShowFrame = frame;
         self.gapMultiple = multiple;
         self.angle = angle;
+        self.allowFade = allowFade;
+        self.duration = duration;
+        self.delay = delay;
         [self addTarget:self action:@selector(clickItem) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
 
--(void)setGapMultiple:(CGFloat)gapMultiple
+- (instancetype)initWithImage:(UIImage *)image showFrame:(CGRect)frame multiple:(CGFloat)multiple angle:(CGFloat)angle
 {
-    if (gapMultiple < 1) {
-        _gapMultiple = 1;
-    }
-    else{
-        _gapMultiple = gapMultiple;
-    }
+    return [self initWithImage:image showFrame:frame multiple:multiple angle:angle allowFade:NO duration:0 delay:0];
 }
--(void)setDelegate:(id<CCScrollParallaxItemDelegate>)delegate
+
+-(instancetype)initWithImage:(UIImage *)image showFrame:(CGRect)frame
 {
-    _delegate = delegate;
-    //设置代理时同时设置，保证可以监听点击事件
-    self.userInteractionEnabled = YES;
+    return [self initWithImage:image showFrame:frame multiple:1 angle:0];
 }
-//取消高亮
--(void)setHighlighted:(BOOL)highlighted
-{
-    
-}
+
 -(void)clickItem
 {
-    if ([self.delegate respondsToSelector:@selector(CCScrollParallaxItemClickItem:)]) {
-        [self.delegate CCScrollParallaxItemClickItem:self];
-    }
+    self.block();
 }
+
+-(void)onClickActionBlock:(void (^)())block
+{
+    self.userInteractionEnabled = YES;
+    self.block = block;
+}
+
+-(CGFloat)gapMultiple{
+    if (_gapMultiple < 1) {
+        return 1;
+    }
+    return _gapMultiple;
+}
+
+-(void)setHighlighted:(BOOL)highlighted{}
 
 @end

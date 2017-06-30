@@ -9,12 +9,11 @@
 #import "ViewController.h"
 #import "CCScrollParallaxView.h"
 
-//屏幕宽
+
 #define kScreenW [UIScreen mainScreen].bounds.size.width
-//屏幕高
 #define kScreenH [UIScreen mainScreen].bounds.size.height
 
-@interface ViewController ()<CCScrollParallaxItemDelegate,CCScrollParallaxViewDelegate>
+@interface ViewController ()<CCScrollParallaxViewDelegate>
 
 @end
 
@@ -23,20 +22,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIImage *image1 = [UIImage imageNamed:@"first1"];
-    UIImage *image2 = [UIImage imageNamed:@"first2"];
-    UIImage *image3 = [UIImage imageNamed:@"first3"];
-    UIImage *image4 = [UIImage imageNamed:@"first4"];
-    UIImage *image5 = [UIImage imageNamed:@"first5"];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.view.backgroundColor = [UIColor whiteColor];
     
-    CCScrollParallaxView *scrollParallaxView = [[CCScrollParallaxView alloc] init];
-    scrollParallaxView.delegate = self;
-    //图片数组图片数量决定滚动页数
-    scrollParallaxView.imageArr = @[image1 ,image2 ,image3 ,image4 ,image5];
-    [scrollParallaxView addToView:self.view];
+    UIImage *bgImg = [UIImage new];
     
-    
-    
+    //一些计算位置的过程
     //圈size
     CGFloat circleWH = 80;
     //偏移量
@@ -59,187 +50,224 @@
     CGRect circleF3 = CGRectMake(circleX3, circleY, circleWH, circleWH);
     CGRect circleF4 = CGRectMake(circleX4, circleY, circleWH, circleWH);
     
+    //commonItem
+    CCScrollParallaxItem *alertItem = [[CCScrollParallaxItem alloc] initWithImage:nil showFrame:CGRectMake(0, kScreenH - 200, kScreenW, 40)];
+    alertItem.titleLabel.font = [UIFont systemFontOfSize:23];
+    [alertItem setTitle:@"👈 Sliding Direction" forState:UIControlStateNormal];
+    [alertItem setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
-    /**
-     *  设置item  在 CCScrollParallaxView addToView 之后 addItem
-     *
-     *  @param imageName 图片名
-     *  @param index     添加到index位置图片上
-     *  @param frame     在所添加的图片上显示的位置
-     *  @param multiple  item移动速度
-     *  @param angle     出现/消失 角度
-     */
-    
-    
-    //第一页
-    //箭头
-    CGFloat arrowW = 50;
-    CGFloat arrowH = 45;
-    CGFloat arrowY = kScreenH - arrowH - 100;
-    CGFloat arrowX = (kScreenW - arrowW) / 2;
-    CCScrollParallaxItem *item00 = [[CCScrollParallaxItem alloc] initWithImageName:@"arrow" index:0 showFrame:CGRectMake(arrowX, arrowY, arrowW, arrowH) multiple:0];
-    [scrollParallaxView addScrollItem:item00];
-    //圈
-    CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF1 multiple:1];
-    
-    [scrollParallaxView addScrollItem:item01];
-    CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF2 multiple:1];
-    
-    [scrollParallaxView addScrollItem:item02];
-    CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF3 multiple:1];
-    
-    [scrollParallaxView addScrollItem:item03];
-    CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:0 showFrame:circleF4 multiple:1];
-    
-    [scrollParallaxView addScrollItem:item04];
+    CCScrollParallaxItem *lastItem = [[CCScrollParallaxItem alloc] initWithImage:nil showFrame:CGRectMake(0, kScreenH - 150, kScreenW, 30)];
+    lastItem.titleLabel.font = [UIFont systemFontOfSize:16];
+    [lastItem setTitle:@"Last Page" forState:UIControlStateNormal];
+    [lastItem setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
     
-    
-    //第二页
-    CCScrollParallaxItem *item11 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:1 showFrame:circleF1 multiple:5];
-    
-    [scrollParallaxView addScrollItem:item11];
-    CCScrollParallaxItem *item12 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:1 showFrame:circleF2 multiple:4];
-    
-    [scrollParallaxView addScrollItem:item12];
-    CCScrollParallaxItem *item13 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:1 showFrame:circleF3 multiple:3];
-    
-    [scrollParallaxView addScrollItem:item13];
-    CCScrollParallaxItem *item14 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:1 showFrame:circleF4 multiple:2];
-    
-    [scrollParallaxView addScrollItem:item14];
-    
-    
-    
-    //第三页
-    CCScrollParallaxItem *item21 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:2 showFrame:circleF1 multiple:5 angle:90];
-    item21.allowFade = YES;
-    [scrollParallaxView addScrollItem:item21];
-    CCScrollParallaxItem *item22 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:2 showFrame:circleF2 multiple:4 angle:-90];
-    item22.allowFade = YES;
-    [scrollParallaxView addScrollItem:item22];
-    CCScrollParallaxItem *item23 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:2 showFrame:circleF3 multiple:3 angle:90];
-    item23.allowFade = YES;
-    [scrollParallaxView addScrollItem:item23];
-    CCScrollParallaxItem *item24 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:2 showFrame:circleF4 multiple:2 angle:-90];
-    item24.allowFade = YES;
-    [scrollParallaxView addScrollItem:item24];
-    
-    
-    
-    //第四页
-    CCScrollParallaxItem *item31 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:3 showFrame:circleF1 multiple:3 angle:30];
-    item31.allowFade = YES;
-    item31.delay = 0.2;
-    [scrollParallaxView addScrollItem:item31];
-    CCScrollParallaxItem *item32 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:3 showFrame:circleF2 multiple:4 angle:100];
-    item32.allowFade = YES;
-    item32.delay = 0.3;
-    [scrollParallaxView addScrollItem:item32];
-    CCScrollParallaxItem *item33 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:3 showFrame:circleF3 multiple:5 angle:223];
-    item33.allowFade = YES;
-    item33.delay = 0.4;
-    [scrollParallaxView addScrollItem:item33];
-    CCScrollParallaxItem *item34 = [[CCScrollParallaxItem alloc] initWithImageName:@"circle" index:3 showFrame:circleF4 multiple:2 angle:311];
-    item34.allowFade = YES;
-    item34.delay = 0.5;
-    [scrollParallaxView addScrollItem:item34];
-    
-    //第五页 - 葫芦娃 
-    //第一个葫芦娃的位置
-    CGFloat huluW = 140;
-    CGFloat huluH = 114.7;
-    
-    CGFloat hulu1Y = 70;
-    CGFloat hulu1X = (kScreenW - huluW) / 2;
-    CGRect hulu1Rect = CGRectMake(hulu1X, hulu1Y, huluW, huluH);
-    //第二个
-    CGFloat hulu2Y = CGRectGetMaxY(hulu1Rect) - 50;
-    CGFloat hulu2X = hulu1X - 50;
-    CGRect hulu2Rect = CGRectMake(hulu2X, hulu2Y, huluW, huluH);
-    //第三个
-    CGFloat hulu3Y = hulu2Y;
-    CGFloat hulu3X = CGRectGetMaxX(hulu1Rect) - 90;
-    CGRect hulu3Rect = CGRectMake(hulu3X, hulu3Y, huluW, huluH);
-    //第四个
-    CGFloat hulu4Y = CGRectGetMaxY(hulu2Rect) - 40;
-    CGFloat hulu4X = hulu2X - 40;
-    CGRect hulu4Rect = CGRectMake(hulu4X, hulu4Y, huluW, huluH);
-    //第五个
-    CGFloat hulu5Y = hulu4Y;
-    CGFloat hulu5X = hulu4X + 60;
-    CGRect hulu5Rect = CGRectMake(hulu5X, hulu5Y, huluW, huluH);
-    //第六个
-    CGFloat hulu6Y = hulu4Y;
-    CGFloat hulu6X = hulu5X + 60;
-    CGRect hulu6Rect = CGRectMake(hulu6X, hulu6Y, huluW, huluH);
-    //第七个
-    CGFloat hulu7Y = hulu4Y;
-    CGFloat hulu7X = hulu6X + 60;
-    CGRect hulu7Rect = CGRectMake(hulu7X, hulu7Y, huluW, huluH);
-    
-    CCScrollParallaxItem *hulu1 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu1" index:4 showFrame:hulu1Rect multiple:1.5 angle:90];
-    hulu1.allowFade = YES;
-    hulu1.delay = 0.3;
-    [scrollParallaxView addScrollItem:hulu1];
-    CCScrollParallaxItem *hulu2 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu2" index:4 showFrame:hulu2Rect multiple:1.5 angle:50];
-    hulu2.allowFade = YES;
-    hulu2.delay = 0.4;
-    [scrollParallaxView addScrollItem:hulu2];
-    CCScrollParallaxItem *hulu3 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu3" index:4 showFrame:hulu3Rect multiple:1.5 angle:120];
-    hulu3.allowFade = YES;
-    hulu3.delay = 0.55;
-    [scrollParallaxView addScrollItem:hulu3];
-    CCScrollParallaxItem *hulu4 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu4" index:4 showFrame:hulu4Rect multiple:1.5 angle:200];
-    hulu4.allowFade = YES;
-    hulu4.delay = 0.7;
-    [scrollParallaxView addScrollItem:hulu4];
-    CCScrollParallaxItem *hulu5 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu5" index:4 showFrame:hulu5Rect multiple:1.5 angle:-120];
-    hulu5.allowFade = YES;
-    hulu5.delay = 0.8;
-    [scrollParallaxView addScrollItem:hulu5];
-    CCScrollParallaxItem *hulu6 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu6" index:4 showFrame:hulu6Rect multiple:1.5 angle:-60];
-    hulu6.allowFade = YES;
-    hulu6.delay = 0.95;
-    [scrollParallaxView addScrollItem:hulu6];
-    CCScrollParallaxItem *hulu7 = [[CCScrollParallaxItem alloc] initWithImageName:@"hulu7" index:4 showFrame:hulu7Rect multiple:1.5 angle:-10];
-    hulu7.allowFade = YES;
-    hulu7.delay = 1.0;
-    [scrollParallaxView addScrollItem:hulu7];
-    
-    
-    //完成
-    CCScrollParallaxItem *item35 = [[CCScrollParallaxItem alloc] initWithImageName:@"done" index:4 showFrame:CGRectMake(arrowX, arrowY, 60, 60) multiple:1];
-    item35.delegate = self;
-    [scrollParallaxView addScrollItem:item35];
-    
-    
-    
-    //标题
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kScreenH - 70, kScreenW, 50)];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.text = @"CCScrollParallaxView";
-    titleLabel.font = [UIFont boldSystemFontOfSize:30];
-    titleLabel.userInteractionEnabled = NO;
-    [scrollParallaxView addSubview:titleLabel];
-}
+    //setup ScrollParallaxView
+    switch (self.type) {
+        case ExampleTypeNormal:{
+            CCScrollParallaxView *normalView = [[CCScrollParallaxView alloc]init];
+            normalView.pageBackgroundImageArray = @[bgImg,bgImg];
+            [normalView showToView:self.view];
+            //add item
+            [normalView addScrollItem:alertItem];
+            [normalView addScrollItem:lastItem toIndex:1];
+            
+            CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1];
+            [normalView addScrollItem:item01 toIndex:1];
+            
+            CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2];
+            [normalView addScrollItem:item02 toIndex:1];
+            
+            CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3];
+            [normalView addScrollItem:item03 toIndex:1];
+            
+            CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4];
+            [normalView addScrollItem:item04 toIndex:1];
+            
+        }
+            break;
+        case ExampleTypeScroll:{
+            CCScrollParallaxView *scrollView = [[CCScrollParallaxView alloc]init];
+            scrollView.pageBackgroundImageArray = @[bgImg,bgImg,bgImg];
+            [scrollView showToView:self.view];
+            //add item
+            [scrollView addScrollItem:alertItem];
+            [scrollView addScrollItem:lastItem toIndex:2];
+            
+            CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1 multiple:5 angle:0];
+            [scrollView addScrollItem:item01 toIndex:1];
+            
+            CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2 multiple:4 angle:0];
+            [scrollView addScrollItem:item02 toIndex:1];
+            
+            CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3 multiple:3 angle:0];
+            [scrollView addScrollItem:item03 toIndex:1];
+            
+            CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4 multiple:2 angle:0];
+            [scrollView addScrollItem:item04 toIndex:1];
+            
+            //next page
+            CCScrollParallaxItem *item11 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1 multiple:5 angle:45];
+            [scrollView addScrollItem:item11 toIndex:2];
+            
+            CCScrollParallaxItem *item12 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2 multiple:4 angle:135];
+            [scrollView addScrollItem:item12 toIndex:2];
+            
+            CCScrollParallaxItem *item13 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3 multiple:3 angle:225];
+            [scrollView addScrollItem:item13 toIndex:2];
+            
+            CCScrollParallaxItem *item14 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4 multiple:2 angle:-45];
+            [scrollView addScrollItem:item14 toIndex:2];
+            
+        }
+            
+            break;
+        case ExampleTypeFade:{
+            CCScrollParallaxView *fadeView = [[CCScrollParallaxView alloc]init];
+            fadeView.pageBackgroundImageArray = @[bgImg,bgImg,bgImg];
+            [fadeView showToView:self.view];
+            //add item
+            [fadeView addScrollItem:alertItem];
+            [fadeView addScrollItem:lastItem toIndex:2];
+            
+            CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1 multiple:1.4 angle:90 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item01 toIndex:1];
+            
+            CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2 multiple:1.3 angle:90 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item02 toIndex:1];
+            
+            CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3 multiple:1.2 angle:90 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item03 toIndex:1];
+            
+            CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4 multiple:1.1 angle:90 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item04 toIndex:1];
+            
+            //next page
+            CCScrollParallaxItem *item11 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1 multiple:1 angle:60 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item11 toIndex:2];
+            
+            CCScrollParallaxItem *item12 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2 multiple:1 angle:60 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item12 toIndex:2];
+            
+            CCScrollParallaxItem *item13 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3 multiple:1 angle:60 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item13 toIndex:2];
+            
+            CCScrollParallaxItem *item14 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4 multiple:1 angle:60 allowFade:YES duration:0 delay:0];
+            [fadeView addScrollItem:item14 toIndex:2];
+        }
+            break;
+        case ExampleTypeDelay:{
+            CCScrollParallaxView *delayView = [[CCScrollParallaxView alloc]init];
+            delayView.pageBackgroundImageArray = @[bgImg,bgImg,bgImg];
+            [delayView showToView:self.view];
+            //add item
+            [delayView addScrollItem:alertItem];
+            [delayView addScrollItem:lastItem toIndex:2];
+            
+            CCScrollParallaxItem *item01 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1 multiple:1 angle:0 allowFade:YES duration:0.5 delay:0];
+            [delayView addScrollItem:item01 toIndex:1];
+            
+            CCScrollParallaxItem *item02 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2 multiple:1 angle:0 allowFade:YES duration:0.5 delay:0.1];
+            [delayView addScrollItem:item02 toIndex:1];
+            
+            CCScrollParallaxItem *item03 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3 multiple:1 angle:0 allowFade:YES duration:0.5 delay:0.2];
+            [delayView addScrollItem:item03 toIndex:1];
+            
+            CCScrollParallaxItem *item04 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4 multiple:1 angle:0 allowFade:YES duration:0.5 delay:0.3];
+            [delayView addScrollItem:item04 toIndex:1];
+            
+            //next page
+            CCScrollParallaxItem *item11 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF1 multiple:1.1 angle:60 allowFade:YES duration:0.4 delay:0];
+            [delayView addScrollItem:item11 toIndex:2];
+            
+            CCScrollParallaxItem *item12 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF2 multiple:1.1 angle:60 allowFade:YES duration:0.5 delay:0];
+            [delayView addScrollItem:item12 toIndex:2];
+            
+            CCScrollParallaxItem *item13 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF3 multiple:1.1 angle:60 allowFade:YES duration:0.6 delay:0];
+            [delayView addScrollItem:item13 toIndex:2];
+            
+            CCScrollParallaxItem *item14 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"circle"] showFrame:circleF4 multiple:1.1 angle:60 allowFade:YES duration:0.7 delay:0];
+            [delayView addScrollItem:item14 toIndex:2];
+        }
+            
+            break;
+        case ExampleTypeComposite:{
+            CCScrollParallaxView *huluView = [[CCScrollParallaxView alloc]init];
+            huluView.pageBackgroundImageArray = @[bgImg,bgImg];
+            [huluView showToView:self.view];
+            //add item
+            [huluView addScrollItem:alertItem];
+            
+            //第一个葫芦娃的位置
+            CGFloat huluW = 140;
+            CGFloat huluH = 114.7;
+            
+            CGFloat hulu1Y = 70;
+            CGFloat hulu1X = (kScreenW - huluW) / 2;
+            CGRect hulu1Rect = CGRectMake(hulu1X, hulu1Y, huluW, huluH);
+            //第二个
+            CGFloat hulu2Y = CGRectGetMaxY(hulu1Rect) - 50;
+            CGFloat hulu2X = hulu1X - 50;
+            CGRect hulu2Rect = CGRectMake(hulu2X, hulu2Y, huluW, huluH);
+            //第三个
+            CGFloat hulu3Y = hulu2Y;
+            CGFloat hulu3X = CGRectGetMaxX(hulu1Rect) - 90;
+            CGRect hulu3Rect = CGRectMake(hulu3X, hulu3Y, huluW, huluH);
+            //第四个
+            CGFloat hulu4Y = CGRectGetMaxY(hulu2Rect) - 40;
+            CGFloat hulu4X = hulu2X - 40;
+            CGRect hulu4Rect = CGRectMake(hulu4X, hulu4Y, huluW, huluH);
+            //第五个
+            CGFloat hulu5Y = hulu4Y;
+            CGFloat hulu5X = hulu4X + 60;
+            CGRect hulu5Rect = CGRectMake(hulu5X, hulu5Y, huluW, huluH);
+            //第六个
+            CGFloat hulu6Y = hulu4Y;
+            CGFloat hulu6X = hulu5X + 60;
+            CGRect hulu6Rect = CGRectMake(hulu6X, hulu6Y, huluW, huluH);
+            //第七个
+            CGFloat hulu7Y = hulu4Y;
+            CGFloat hulu7X = hulu6X + 60;
+            CGRect hulu7Rect = CGRectMake(hulu7X, hulu7Y, huluW, huluH);
 
-#pragma mark - 监听item点击事件
--(void)CCScrollParallaxItemClickItem:(CCScrollParallaxItem *)item
-{
-    [self alert];
-}
-#pragma mark - CCScrollParallaxView delegate
-//滚动到最后触发事件
--(void)CCScrollParallaxViewWillScrollEnd:(CCScrollParallaxView *)CCScrollParallaxView
-{
-    //    [self alert];
-}
+            CCScrollParallaxItem *hulu1 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu1"] showFrame:hulu1Rect multiple:1.5 angle:90 allowFade:NO duration:0 delay:0];
+            [huluView addScrollItem:hulu1 toIndex:1];
+            
+            CCScrollParallaxItem *hulu2 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu2"] showFrame:hulu2Rect multiple:1.1 angle:50 allowFade:YES duration:0.2 delay:0.1];
+            [huluView addScrollItem:hulu2 toIndex:1];
+            
+            CCScrollParallaxItem *hulu3 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu3"] showFrame:hulu3Rect multiple:1.1 angle:120 allowFade:YES duration:0.2 delay:0];
+            [huluView addScrollItem:hulu3 toIndex:1];
+            
+            CCScrollParallaxItem *hulu4 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu4"] showFrame:hulu4Rect multiple:1 angle:0 allowFade:YES duration:0.5 delay:0.7];
+            [huluView addScrollItem:hulu4 toIndex:1];
+            
+            CCScrollParallaxItem *hulu5 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu5"] showFrame:hulu5Rect multiple:1 angle:0 allowFade:YES duration:0.5 delay:1.1];
+            [huluView addScrollItem:hulu5 toIndex:1];
+            
+            CCScrollParallaxItem *hulu6 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu6"] showFrame:hulu6Rect multiple:1 angle:0 allowFade:YES duration:0.5 delay:0.3];
+            [huluView addScrollItem:hulu6 toIndex:1];
+            
+            CCScrollParallaxItem *hulu7 = [[CCScrollParallaxItem alloc] initWithImage:[UIImage imageNamed:@"hulu7"] showFrame:hulu7Rect multiple:1 angle:0 allowFade:YES duration:0.5 delay:0.9];
+            [huluView addScrollItem:hulu7 toIndex:1];
+            
+            
+            CCScrollParallaxItem *doneItem = [[CCScrollParallaxItem alloc] initWithImage:nil showFrame:CGRectMake(0, kScreenH - 150, kScreenW, 30)];
+            [doneItem setTitle:@"The End" forState:UIControlStateNormal];
+            [doneItem setTitleColor:[UIColor colorWithRed:18.0/255 green:106.0/255 blue:255.0/255 alpha:1] forState:UIControlStateNormal];
+            doneItem.titleLabel.font = [UIFont systemFontOfSize:18];
+            [huluView addScrollItem:doneItem toIndex:1];
+            
+            __weak typeof(self) weakSelf = self;
+            [doneItem onClickActionBlock:^{
+                [weakSelf.navigationController popViewControllerAnimated:YES];
+            }];
+            
+        }
+            break;
+    }
+    
 
--(void)alert
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"做你想做的" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-    [alert show];
 }
 
 
