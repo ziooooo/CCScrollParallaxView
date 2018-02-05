@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="NRd-3I-fbd">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="NRd-3I-fbd">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -41,11 +41,11 @@
                                         <rect key="frame" x="0.0" y="35" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="u7f-b4-AF0" id="m38-pB-npX">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="normal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oB4-bR-CtJ">
-                                                    <rect key="frame" x="15" y="0.0" width="270" height="43"/>
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -54,18 +54,18 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="tC5-9k-b6o" kind="push" identifier="0" id="4Re-hc-j2K"/>
+                                            <segue destination="tC5-9k-b6o" kind="show" identifier="0" id="4Re-hc-j2K"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="SBh-oc-aQQ" style="IBUITableViewCellStyleDefault" id="ZDR-L8-D4i">
                                         <rect key="frame" x="0.0" y="79" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZDR-L8-D4i" id="cSE-A6-Gll">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="scroll" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SBh-oc-aQQ">
-                                                    <rect key="frame" x="15" y="0.0" width="270" height="43"/>
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -74,18 +74,18 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="tC5-9k-b6o" kind="push" identifier="1" id="lOS-2h-Eet"/>
+                                            <segue destination="tC5-9k-b6o" kind="show" identifier="1" id="lOS-2h-Eet"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="Wri-sW-QiL" style="IBUITableViewCellStyleDefault" id="5WU-Q5-nx1">
                                         <rect key="frame" x="0.0" y="123" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5WU-Q5-nx1" id="VW2-uv-rAe">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="fade" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Wri-sW-QiL">
-                                                    <rect key="frame" x="15" y="0.0" width="270" height="43"/>
+                                                    <rect key="frame" x="15" y="0.0" width="270" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -94,7 +94,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="tC5-9k-b6o" kind="push" identifier="2" id="ofG-4W-wNR"/>
+                                            <segue destination="tC5-9k-b6o" kind="show" identifier="2" id="ofG-4W-wNR"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="Nry-IQ-Ptw" style="IBUITableViewCellStyleDefault" id="BEM-7V-PUe">
@@ -114,7 +114,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="tC5-9k-b6o" kind="push" identifier="3" id="zf7-35-w3b"/>
+                                            <segue destination="tC5-9k-b6o" kind="show" identifier="3" id="zf7-35-w3b"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
@@ -138,7 +138,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="tC5-9k-b6o" kind="push" identifier="4" id="Asx-9v-rLY"/>
+                                            <segue destination="tC5-9k-b6o" kind="show" identifier="4" id="Asx-9v-rLY"/>
                                         </connections>
                                     </tableViewCell>
                                 </cells>
