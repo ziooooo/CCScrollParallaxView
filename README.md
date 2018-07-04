@@ -10,7 +10,7 @@
 
 ## 使用效果
 
-![image](https://github.com/ziooooo/CCScrollParallaxView/blob/master/123.gif ) 
+![image](https://github.com/ziooooo/CCScrollParallaxView/blob/master/eg.gif ) 
 
 ## 基本使用
 1.创建`CCScrollParallaxView`实例
